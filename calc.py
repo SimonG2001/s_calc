@@ -1,4 +1,5 @@
 import sys
+import logging
 
 
 def calc(variableDict, varList, value, pos):
@@ -16,7 +17,7 @@ def calc(variableDict, varList, value, pos):
     # If the other variable in the operation is not int, get variable's value
     if not var.isnumeric():
         if var not in variableDict:
-            return "Error: variable " + var + " not defined"
+            logging.error("variable " + var + " is not defined")
         var = calc(variableDict, variableDict[var], 0, 0)
 
     # Do arithmetic operation of choice
@@ -64,11 +65,11 @@ def main(filename):
             break
 
         # Prints and calculates output for variable
-        elif command[0] == "print":
+        elif command[0] == "print" and len(command) == 2:
             if command[1] in variableDict:
                 print(calc(variableDict, variableDict[command[1]], 0, 0))  
             else:
-                print("Error: variable " + var + " not defined")
+                logging.error("variable " + command[1] + " is not defined")
 
         # If command is arithmetic operation of size 3 and variable 1 not int
         elif (len(command) == 3 and (command[1] == "add" or 
@@ -86,7 +87,8 @@ def main(filename):
             # Add command to variables list in the dictionary
             variableDict[var].append(command)
         else:
-            print("Error, bad command: " + ' '.join(command))
+            if not command == ['']:
+                logging.error("Bad command: " + ' '.join(command))
 
 
 if __name__ == "__main__": 
